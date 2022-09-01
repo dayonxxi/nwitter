@@ -13,9 +13,9 @@ const Auth = () => {
 			target: { name, value },
 		} = event;
 
-		if (name == 'email') {
+		if (name === 'email') {
 			setEmail(value);
-		} else if (name == 'password') {
+		} else if (name === 'password') {
 			setPassword(value);
 		}
 	};
@@ -28,10 +28,7 @@ const Auth = () => {
 			let data;
 			if (newAccount) {
 				// create newAccount
-				data = await authService.createUserWithEmailAndPassword(
-					email,
-					password
-				);
+				data = await authService.signWithEmailAndPassword(email, password);
 			} else {
 				//log in
 				data = await authService.signInWithEmailAndPassword(email, password);
