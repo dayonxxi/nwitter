@@ -1,5 +1,6 @@
 import { dbService } from 'fbase';
 import React, { useEffect, useState } from 'react';
+import Nweet from 'components/Nweet';
 
 const Home = ({ userObj }) => {
 	// console.log(userObj);
@@ -40,23 +41,25 @@ const Home = ({ userObj }) => {
 	// console.log(nweets);
 
 	return (
-		<form onSubmit={onSubmit}>
-			<input
-				value={nweet}
-				onChange={onChange}
-				type='text'
-				placeholder="what's on your mind?"
-				maxLength={120}
-			/>
-			<input type='submit' value='Nweet' />
-			<div>
-				{nweets.map((nweet) => (
-					<div key={nweet.id}>
-						<h4>{nweet.text}</h4>
-					</div>
-				))}
-			</div>
-		</form>
+		<div>
+			<form onSubmit={onSubmit}>
+				<input
+					value={nweet}
+					onChange={onChange}
+					type='text'
+					placeholder="what's on your mind?"
+					maxLength={120}
+				/>
+				<input type='submit' value='Nweet' />
+			</form>
+			{nweets.map((nweet) => (
+				<Nweet
+					key={nweet.id}
+					nweetObj={nweet}
+					isOwner={nweet.createdID === userObj.uid}
+				/>
+			))}
+		</div>
 	);
 };
 
