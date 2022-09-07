@@ -1,13 +1,14 @@
+import React, { useState, useEffect } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import { dbService, storageService } from 'fbase';
-import React, { useEffect, useState } from 'react';
 import Nweet from 'components/Nweet';
-import { v4 as uuid4 } from 'uuid';
 
 const Home = ({ userObj }) => {
 	// console.log(userObj);
 	const [nweet, setNweet] = useState('');
 	const [nweets, setNweets] = useState([]);
 	const [attachment, setAttachment] = useState('');
+	const [file, setFile] = useState('');
 
 	useEffect(() => {
 		dbService
@@ -35,11 +36,25 @@ const Home = ({ userObj }) => {
 
 		// 스토리지, 레퍼런스를 순서대로 호출한 다음
 		// child함수에 사용자 아이디를 폴더 이름으로, 파일 이름을 uuid4로 처리함
-		const attachmentRef = storageService
-			.ref()
-			.child(`${userObj.uid}/${uuid4()}`);
-		const response = await attachmentRef.putString(attachment, 'data_url');
-		console.log(response);
+		let attachmentUrl = '';
+		if (attachmentUrl !== '') {
+			const attachmentRef = storageService
+				.ref()
+				.child(`${userObj.uid}/${uuidv4()}`);
+			const response = await attachmentRef.putString(attachment, 'data_url');
+			// console.log(await response.ref.getDownloadURL());
+			attachmentUrl = await response.ref.getDownloadURL();
+		}
+
+		await dbService.collection('nweets').add({
+			text: nweet,
+			createdAt: Date.now(),
+			creatorId: userObj.uid,
+			attachmentUrl,
+		});
+		setNweet('');
+		setAttachment('');
+		setFile('');
 	};
 
 	const onChange = (event) => {
@@ -54,10 +69,11 @@ const Home = ({ userObj }) => {
 	const onFileChange = (event) => {
 		// console.log(event.target.files);
 		const {
-			target: { files },
+			target: { files, value },
 		} = event;
 		const theFile = files[0];
 		const reader = new FileReader();
+		setFile(value);
 		// onloadend는 파일이 함수로 들어간 이후 결괏값이 나온 다음 상황을 감지하는데,
 		// 그때 생긴 이벤트값을 사용할 수 있게 해줌 (이벤트값에는 우리가 원하는 파일 URL이 있음)
 		reader.onloadend = (finishedEvent) => {
@@ -70,7 +86,10 @@ const Home = ({ userObj }) => {
 		reader.readAsDataURL(theFile);
 	};
 
-	const onClearAttachment = () => setAttachment('');
+	const onClearAttachment = () => {
+		setAttachment('');
+		setFile('');
+	};
 
 	return (
 		<div>
@@ -82,7 +101,12 @@ const Home = ({ userObj }) => {
 					placeholder="what's on your mind?"
 					maxLength={120}
 				/>
-				<input type='file' accept='image/*' onChange={onFileChange} />
+				<input
+					type='file'
+					accept='image/*'
+					onChange={onFileChange}
+					value={file}
+				/>
 				<input type='submit' value='Nweet' />
 				{attachment && (
 					<div>
