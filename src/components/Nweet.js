@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { dbService } from 'fbase';
+import { dbService, storageService } from 'fbase';
 
 const Nweet = ({ nweetObj, isOwner }) => {
 	// <수정> 버튼을 클릭했을 때, 입력란과 버튼이 나타나는 기준점
@@ -9,13 +9,14 @@ const Nweet = ({ nweetObj, isOwner }) => {
 
 	const onDeleteClick = async () => {
 		const ok = window.confirm('삭제하시겠습니까?');
-		console.log(ok);
+		// console.log(ok);
 
 		if (ok) {
-			console.log(nweetObj.id);
+			// console.log(nweetObj.id);
 			// 해당 id의 문서를 얻어와서 data에 담음
-			const data = await dbService.doc(`nweets/${nweetObj.id}`).delete();
-			console.log(data);
+			await dbService.doc(`nweets/${nweetObj.id}`).delete();
+			if (nweetObj.attachmentUrl !== '')
+				await storageService.refFromURL(nweetObj.attachmentUrl).delete();
 		}
 	};
 

@@ -13,7 +13,7 @@ const Home = ({ userObj }) => {
 	useEffect(() => {
 		dbService
 			.collection('nweets')
-			.orderBy('createdAt', 'desc')
+			// .orderBy('createdAt', 'desc')
 			.onSnapshot((onSnapshot) => {
 				const newArray = onSnapshot.docs.map((document) => ({
 					id: document.id,
@@ -29,7 +29,7 @@ const Home = ({ userObj }) => {
 		/* await dbService.collection('nweets').add({
 			text: nweet,
 			createdAt: Date.now(),
-			createdID: userObj.uid,
+			creatorId: userObj.uid,
 		});
 		// nweet 상태를 다시 빈 문자열로 초기화
 		setNweet(''); */
@@ -37,13 +37,14 @@ const Home = ({ userObj }) => {
 		// 스토리지, 레퍼런스를 순서대로 호출한 다음
 		// child함수에 사용자 아이디를 폴더 이름으로, 파일 이름을 uuid4로 처리함
 		let attachmentUrl = '';
-		if (attachmentUrl !== '') {
+		if (attachment !== '') {
 			const attachmentRef = storageService
 				.ref()
 				.child(`${userObj.uid}/${uuidv4()}`);
 			const response = await attachmentRef.putString(attachment, 'data_url');
 			// console.log(await response.ref.getDownloadURL());
 			attachmentUrl = await response.ref.getDownloadURL();
+			console.log(attachmentUrl);
 		}
 
 		await dbService.collection('nweets').add({
@@ -119,7 +120,7 @@ const Home = ({ userObj }) => {
 				<Nweet
 					key={nweet.id}
 					nweetObj={nweet}
-					isOwner={nweet.createdID === userObj.uid}
+					isOwner={nweet.creatorId === userObj.uid}
 				/>
 			))}
 		</div>
