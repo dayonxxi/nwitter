@@ -24,7 +24,7 @@ const Profile = ({ userObj }) => {
 	// Profile 컴포넌트가 렌더링된 이후 useEffect의 첫번째 인자로 넘겨준 함수가 실행됨
 	useEffect(() => {
 		getMyNweets();
-	});
+	},[];
 
 	return (
 		<>
