@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { dbService, storageService } from 'fbase';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 
 const Nweet = ({ nweetObj, isOwner }) => {
 	// <수정> 버튼을 클릭했을 때, 입력란과 버튼이 나타나는 기준점
@@ -37,14 +39,23 @@ const Nweet = ({ nweetObj, isOwner }) => {
 	};
 
 	return (
-		<div>
+		<div className='nweet'>
 			{editing ? (
 				<>
-					<form onSubmit={onSubmit}>
-						<input onChange={onChange} value={newNweet} required />
-						<input type='submit' value='Update Nweet' />
+					<form onSubmit={onSubmit} className='container nweetEdit'>
+						<input
+							onChange={onChange}
+							value={newNweet}
+							required
+							placeholder='Edit your nweet'
+							autoFocus
+							className='formInput'
+						/>
+						<input type='submit' value='Update Nweet' className='formBtn' />
 					</form>
-					<button onClick={toggleEditing}>Cancel</button>
+					<button onClick={toggleEditing} className='formBtn cancelBtn'>
+						Cancel
+					</button>
 				</>
 			) : (
 				<>
@@ -58,10 +69,14 @@ const Nweet = ({ nweetObj, isOwner }) => {
 						/>
 					)}
 					{isOwner && (
-						<>
-							<button onClick={onDeleteClick}>Delete Nweet</button>
-							<button onClick={toggleEditing}>Edit Nweet</button>
-						</>
+						<div className='nweet__actions'>
+							<span onClick={onDeleteClick}>
+								<FontAwesomeIcon icon={faTrash} />
+							</span>
+							<span onClick={toggleEditing}>
+								<FontAwesomeIcon icon={faPencilAlt} />
+							</span>
+						</div>
 					)}
 				</>
 			)}
