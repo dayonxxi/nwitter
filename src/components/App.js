@@ -11,8 +11,11 @@ function App() {
 		authService.onAuthStateChanged((user) => {
 			// authService.currentUser 함수는 처음에 null을 반환하므로 user에 값이 있는지 확인하여 불확실성 제거.
 			if (user) {
-				setIsLoggedIn(user);
-				setUserObj(user);
+				setUserObj({
+					uid: user.uid,
+					displayName: user.displayName,
+					updateProfile: (args) => user.updateProfile(args),
+				});
 			} else {
 				setIsLoggedIn(false);
 			}
@@ -20,10 +23,18 @@ function App() {
 		});
 	}, []); // 2번째 인자에 []을 넣은 이유는 컴포넌트가 최초로 렌더링이 완료되었을 때, 1회만 동작하도록 하기 위함.
 
+	const refreshUser = () => {
+		setUserObj(authService.currentUser);
+	};
+
 	return (
 		<>
 			{init ? (
-				<AppRouter isLoggedIn={isLoggedIn} userObj={userObj} />
+				<AppRouter
+					refreshUser={refreshUser}
+					isLoggedIn={Boolean(userObj)}
+					userObj={userObj}
+				/>
 			) : (
 				'initializing...'
 			)}

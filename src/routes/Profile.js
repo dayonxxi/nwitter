@@ -1,15 +1,32 @@
-import React, { useEffect } from 'react';
-import { authService, dbService } from 'fbase';
+import React, { useState } from 'react';
+import { authService } from 'fbase';
 import { useNavigate } from 'react-router-dom';
 
-const Profile = ({ userObj }) => {
+const Profile = ({ userObj, refreshUser }) => {
 	const navigate = useNavigate();
+	const [newDisplayName, setNewDisplayName] = useState(userObj.newDisplayName);
 
 	const onLogOutClick = () => {
 		authService.signOut();
 		navigate('/');
 	};
 
+	const onChange = (event) => {
+		const {
+			target: { value },
+		} = event;
+		setNewDisplayName(value);
+	};
+
+	const onSubmit = async (event) => {
+		event.preventDefault();
+		if (userObj.displayName !== newDisplayName) {
+			await userObj.updateProfile({ displayName: newDisplayName });
+			refreshUser();
+		}
+	};
+
+	/* 내가 쓴 nweets만 보이도록 filtering하는 코드
 	const getMyNweets = async () => {
 		const nweets = await dbService
 			.collection('nweets')
@@ -25,9 +42,19 @@ const Profile = ({ userObj }) => {
 		getMyNweets();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [userObj]);
+*/
 
 	return (
 		<>
+			<form onSubmit={onSubmit}>
+				<input
+					onChange={onChange}
+					type='text'
+					placeholder='display name'
+					value={newDisplayName}
+				/>
+				<input type='submit' placeholder='Update Profile' />
+			</form>
 			<button onClick={onLogOutClick}>Log Out</button>
 		</>
 	);
