@@ -34,7 +34,7 @@ const Profile = ({ userObj, refreshUser }) => {
 			.orderBy('createdAt', 'asc')
 			.get(); // get함수는 쿼리 문을 통해 얻은 결과문을 가져옴
 
-		console.log(nweets.docs.map((doc) => doc.data()));
+		// console.log(nweets.docs.map((doc) => doc.data()));
 	};
 
 	// Profile 컴포넌트가 렌더링된 이후 useEffect의 첫번째 인자로 넘겨준 함수가 실행됨
