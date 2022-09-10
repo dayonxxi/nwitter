@@ -72,8 +72,10 @@ const NweetFactory = ({ userObj }) => {
 			} = finishedEvent;
 			setAttachment(result);
 		};
-		// readAsDataURL 함수는 파일 정보를 인자로 받아서 파일 위치를 URL로 반환함
-		reader.readAsDataURL(theFile);
+		if (Boolean(theFile)) {
+			// readAsDataURL 함수는 파일 정보를 인자로 받아서 파일 위치를 URL로 반환함
+			reader.readAsDataURL(theFile);
+		}
 	};
 
 	const onClearAttachment = () => {

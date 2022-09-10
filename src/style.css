@@ -186,7 +186,7 @@ form {
 
 .nweet img {
 	right: -10px;
-	top: 20px;
+	top: 5px;
 	position: absolute;
 	border-radius: 50%;
 	width: 50px;
@@ -197,7 +197,7 @@ form {
 .nweet__actions {
 	position: absolute;
 	right: 10px;
-	top: 10px;
+	top: 15px;
 }
 
 .nweet__actions span {
